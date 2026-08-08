@@ -3,7 +3,6 @@
 
 User-agent: *
 Allow: /
-Crawl-delay: 0.5
 
 # Allow search engines
 User-agent: Googlebot
@@ -14,19 +13,15 @@ Allow: /
 
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Slurp
 Allow: /
-Crawl-delay: 1
 
 User-agent: DuckDuckBot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Yandex
 Allow: /
-Crawl-delay: 1
 
 # Allow social media crawlers
 User-agent: facebookexternalhit
@@ -105,5 +100,3 @@ Allow: /*.svg$
 # Sitemap index (points to chunked child sitemaps)
 Sitemap: https://kotobi.xyz/sitemap.xml
 
-# Host (preferred domain)
-Host: https://kotobi.xyz

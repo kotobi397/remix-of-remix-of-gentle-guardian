@@ -71,14 +71,24 @@ export const onRequest = async (context: any) => {
     results.bing = { error: e?.message };
   }
 
+  // Google's sitemap ping endpoint was retired in 2023 and now returns 404.
+  // Google discovers new URLs via robots.txt -> /sitemap.xml (lastmod) instead.
   try {
-    const googleRes = await fetch(
-      `https://www.google.com/ping?sitemap=https://${SITE_HOST}/sitemap.xml`
-    );
-    results.google = { status: googleRes.status };
+    const yandexRes = await fetch('https://yandex.com/indexnow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({
+        host: SITE_HOST,
+        key: INDEXNOW_KEY,
+        keyLocation: `https://${SITE_HOST}/${INDEXNOW_KEY}.txt`,
+        urlList: validUrls,
+      }),
+    });
+    results.yandex = { status: yandexRes.status };
   } catch (e: any) {
-    results.google = { error: e?.message };
+    results.yandex = { error: e?.message };
   }
+
 
   return new Response(JSON.stringify({ submitted: validUrls.length, results }, null, 2), {
     status: 200,

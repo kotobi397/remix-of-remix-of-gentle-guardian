@@ -50,7 +50,9 @@ export function xmlResponse(body: string, maxAge = 3600) {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
       'Cache-Control': `public, max-age=${maxAge}, s-maxage=${maxAge}`,
-      'X-Robots-Tag': 'noindex',
+      // NOTE: never send "X-Robots-Tag: noindex" on a sitemap — Google can reject
+      // the whole file and stop discovering the URLs inside it.
+
     },
   });
 }
@@ -143,29 +145,29 @@ export async function buildIndex() {
 
   const now = new Date().toISOString();
   const entries: { loc: string; lastmod?: string }[] = [
-    { loc: `${SITE}/sitemaps/pages.xml` },
+    { loc: `${SITE}/sitemaps/pages.xml`, lastmod: now },
     { loc: `${SITE}/sitemaps/latest.xml`, lastmod: now },
   ];
 
   const chunks = (total: number, per: number) => Math.max(1, Math.ceil(total / per));
 
   for (let i = 1; i <= chunks(books, BOOKS_PER_FILE); i++) {
-    entries.push({ loc: `${SITE}/sitemaps/books-${i}.xml` });
+    entries.push({ loc: `${SITE}/sitemaps/books-${i}.xml`, lastmod: now });
   }
   for (let i = 1; i <= chunks(authors, ROWS_PER_FILE); i++) {
-    entries.push({ loc: `${SITE}/sitemaps/authors-${i}.xml` });
+    entries.push({ loc: `${SITE}/sitemaps/authors-${i}.xml`, lastmod: now });
   }
   for (let i = 1; i <= chunks(categories, ROWS_PER_FILE); i++) {
-    entries.push({ loc: `${SITE}/sitemaps/categories-${i}.xml` });
+    entries.push({ loc: `${SITE}/sitemaps/categories-${i}.xml`, lastmod: now });
   }
   if (clubs > 0) {
     for (let i = 1; i <= chunks(clubs, ROWS_PER_FILE); i++) {
-      entries.push({ loc: `${SITE}/sitemaps/clubs-${i}.xml` });
+      entries.push({ loc: `${SITE}/sitemaps/clubs-${i}.xml`, lastmod: now });
     }
   }
   if (users > 0) {
     for (let i = 1; i <= chunks(users, ROWS_PER_FILE); i++) {
-      entries.push({ loc: `${SITE}/sitemaps/users-${i}.xml` });
+      entries.push({ loc: `${SITE}/sitemaps/users-${i}.xml`, lastmod: now });
     }
   }
 
