@@ -50,7 +50,9 @@ export function xmlResponse(body: string, maxAge = 3600) {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
       'Cache-Control': `public, max-age=${maxAge}, s-maxage=${maxAge}`,
-      'X-Robots-Tag': 'noindex',
+      // NOTE: never send "X-Robots-Tag: noindex" on a sitemap — Google can reject
+      // the whole file and stop discovering the URLs inside it.
+
     },
   });
 }
