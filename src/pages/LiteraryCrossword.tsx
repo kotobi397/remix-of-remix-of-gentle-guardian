@@ -291,7 +291,7 @@ const LiteraryCrossword: React.FC = () => {
                 </div>
               )}
 
-              )}
+
 
               <div className="mt-4 flex flex-wrap gap-2">
                 {!started && !isCompleted && (
