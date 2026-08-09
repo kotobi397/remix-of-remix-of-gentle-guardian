@@ -82,3 +82,8 @@
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
   Service-Worker-Allowed: /
+
+# SPA HTML routes (no file extension): always revalidate, short CDN cache
+/*
+  Cache-Control: no-cache, must-revalidate
+  CDN-Cache-Control: public, s-maxage=60, stale-while-revalidate=600
