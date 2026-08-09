@@ -287,8 +287,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   // Public member profiles. Profiles that own books redirect to /author/... ,
   // so they are excluded here to avoid redirect duplicates in the sitemap.
   if (type === 'users') {
-    const rows = await fetchRows(
-      `profiles?select=id,username,last_seen,created_at&username=not.is.null&author_slug=is.null&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `profiles?select=id,username,last_seen,created_at&username=not.is.null&author_slug=is.null&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const u of rows) {
       if (!u.username) continue;
