@@ -61,13 +61,14 @@ const LiteraryCrossword: React.FC = () => {
 
   // المؤقت
   useEffect(() => {
-    if (!attempt?.started_at || isCompleted) return;
-    const startedAt = new Date(attempt.started_at).getTime();
+    const startedAtRaw = attempt?.started_at ?? localStartedAt;
+    if (!startedAtRaw || isCompleted) return;
+    const startedAt = new Date(startedAtRaw).getTime();
     const tick = () => setElapsed(Math.max(0, Math.floor((Date.now() - startedAt) / 1000)));
     tick();
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
-  }, [attempt?.started_at, isCompleted]);
+  }, [attempt?.started_at, localStartedAt, isCompleted]);
 
   useEffect(() => {
     if (!active.clue && clues.length) setActive({ clue: clues[0], cell: cellKey(clues[0].row, clues[0].col) });
@@ -77,6 +78,43 @@ const LiteraryCrossword: React.FC = () => {
     const answers = extractAnswers(clues, letters);
     return clues.filter((c) => (answers[String(c.number)] ?? '').length === c.length).length;
   }, [clues, letters]);
+
+  // كلمة السؤال النشط (لصندوق الكتابة السريع)
+  const activeWord = useMemo(() => {
+    const c = active.clue;
+    if (!c) return '';
+    let w = '';
+    for (let i = 0; i < c.length; i++) {
+      const r = c.dir === 'across' ? c.row : c.row + i;
+      const col = c.dir === 'across' ? c.col + i : c.col;
+      w += letters[cellKey(r, col)] ?? ' ';
+    }
+    return w.replace(/\s+$/, '');
+  }, [active.clue, letters]);
+
+  const writeWord = (raw: string) => {
+    const c = active.clue;
+    if (!c || !started) return;
+    const chars = raw.replace(/[\s\u064B-\u0652]/g, '').slice(0, c.length).split('');
+    setLetters((prev) => {
+      const next = { ...prev };
+      for (let i = 0; i < c.length; i++) {
+        const r = c.dir === 'across' ? c.row : c.row + i;
+        const col = c.dir === 'across' ? c.col + i : c.col;
+        const k = cellKey(r, col);
+        if (chars[i]) next[k] = chars[i];
+        else delete next[k];
+      }
+      return next;
+    });
+  };
+
+  const goToClue = (delta: number) => {
+    if (!active.clue) return;
+    const idx = clues.findIndex((c) => c.number === active.clue!.number && c.dir === active.clue!.dir);
+    const nextClue = clues[(idx + delta + clues.length) % clues.length];
+    if (nextClue) setActive({ clue: nextClue, cell: cellKey(nextClue.row, nextClue.col) });
+  };
 
   const handleStart = async () => {
     if (!user) {
@@ -88,8 +126,11 @@ const LiteraryCrossword: React.FC = () => {
       toast({ title: 'تعذّر بدء اللعبة', variant: 'destructive' });
       return;
     }
-    toast({ title: 'انطلق العدّاد! ⏱️', description: 'حاول إنهاء الشبكة بأسرع وقت.' });
+    setStartedLocal(true);
+    setLocalStartedAt(res.started_at ?? new Date().toISOString());
+    toast({ title: 'انطلق العدّاد! ⏱️', description: 'اضغط على أي خانة واكتب الحروف، أو اكتب الكلمة كاملة في الصندوق أسفل الشبكة.' });
   };
+
 
   const handleHint = async () => {
     if (!active.clue) return;
