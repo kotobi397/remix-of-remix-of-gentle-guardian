@@ -208,11 +208,12 @@ export async function buildChild(type: string, page: number): Promise<string | n
     for (const book of rows) {
       const slug = encodePathSegment(book.slug || book.id);
       const lastmod = iso(book.reviewed_at || book.created_at);
+      // Only the canonical book page is submitted. /tahmil, /qiraa and /molakhas
+      // are near-duplicate landings — keeping them out of the sitemap focuses
+      // Google's crawl budget on the pages we actually want indexed.
       urls.push({ url: `${SITE}/book/${slug}`, lastmod, changefreq: 'monthly', priority: 0.8 });
-      for (const prefix of ['tahmil', 'qiraa', 'molakhas']) {
-        urls.push({ url: `${SITE}/${prefix}/${slug}`, lastmod, changefreq: 'monthly', priority: 0.7 });
-      }
     }
+
     return renderUrlset(urls);
   }
 
