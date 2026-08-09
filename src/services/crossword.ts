@@ -117,7 +117,8 @@ export function buildGridMeta(clues: CrosswordClue[]) {
       cellClues.set(k, entry);
     }
     const startKey = cellKey(c.row, c.col);
-    if (!numbers.has(startKey)) numbers.set(startKey, String(c.number));
+    const existing = numbers.get(startKey);
+    numbers.set(startKey, existing ? `${existing}/${c.number}` : String(c.number));
   });
 
   return { cells, numbers, cellClues };
