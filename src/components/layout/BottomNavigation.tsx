@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IconGear, IconTrophy } from '@/components/icons/KotobiIcons';
-import { Sparkles } from '@/components/icons/kotobi-lucide';
 import HomeIcon from '@/components/icons/HomeIcon';
 import UploadBookIcon from '@/components/icons/UploadBookIcon';
 import QuoteIcon from '@/components/icons/QuoteIcon';
