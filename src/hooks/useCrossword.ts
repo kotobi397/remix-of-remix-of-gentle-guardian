@@ -29,11 +29,18 @@ export function useCrosswordActions(puzzleId?: string) {
 
   const start = useMutation({
     mutationFn: () => crossword.startAttempt(puzzleId!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crossword', 'current'] });
+    },
   });
 
   const hint = useMutation({
     mutationFn: (number: number) => crossword.useHint(puzzleId!, number),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crossword', 'current'] });
+    },
   });
+
 
   const submit = useMutation({
     mutationFn: (answers: Record<string, string>) => crossword.submit(puzzleId!, answers),
