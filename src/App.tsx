@@ -64,6 +64,7 @@ const ProfileCustomization = lazy(() => import('./pages/ProfileCustomization'));
 const Rewards = lazy(() => import('./pages/Rewards'));
 const Shop = lazy(() => import('./pages/Shop'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const LiteraryCrossword = lazy(() => import('./pages/LiteraryCrossword'));
 import DailyLoginModal from './components/gamification/DailyLoginModal';
 import MysteryDropHunter from './components/gamification/MysteryDropHunter';
 
