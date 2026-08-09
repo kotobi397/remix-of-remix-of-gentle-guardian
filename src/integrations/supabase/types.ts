@@ -1852,107 +1852,6 @@ export type Database = {
           },
         ]
       }
-      crossword_attempts: {
-        Row: {
-          completed_at: string | null
-          correct_words: number
-          created_at: string
-          duration_seconds: number | null
-          hints_used: number
-          id: string
-          is_completed: boolean
-          puzzle_id: string
-          rewarded: boolean
-          score: number
-          started_at: string
-          total_words: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          completed_at?: string | null
-          correct_words?: number
-          created_at?: string
-          duration_seconds?: number | null
-          hints_used?: number
-          id?: string
-          is_completed?: boolean
-          puzzle_id: string
-          rewarded?: boolean
-          score?: number
-          started_at?: string
-          total_words?: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          completed_at?: string | null
-          correct_words?: number
-          created_at?: string
-          duration_seconds?: number | null
-          hints_used?: number
-          id?: string
-          is_completed?: boolean
-          puzzle_id?: string
-          rewarded?: boolean
-          score?: number
-          started_at?: string
-          total_words?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "crossword_attempts_puzzle_id_fkey"
-            columns: ["puzzle_id"]
-            isOneToOne: false
-            referencedRelation: "crossword_puzzles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      crossword_puzzles: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          description: string | null
-          difficulty: string
-          id: string
-          is_published: boolean
-          size: number
-          title: string
-          updated_at: string
-          week_start: string
-          words: Json
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
-          difficulty?: string
-          id?: string
-          is_published?: boolean
-          size?: number
-          title: string
-          updated_at?: string
-          week_start: string
-          words?: Json
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
-          difficulty?: string
-          id?: string
-          is_published?: boolean
-          size?: number
-          title?: string
-          updated_at?: string
-          week_start?: string
-          words?: Json
-        }
-        Relationships: []
-      }
       daily_message_reads: {
         Row: {
           created_at: string
@@ -5633,7 +5532,6 @@ export type Database = {
         Args: { p_submission_id: string }
         Returns: string
       }
-      cw_get_current_puzzle: { Args: never; Returns: Json }
       cw_get_leaderboard: {
         Args: { _limit?: number; _puzzle_id?: string }
         Returns: {
@@ -5646,15 +5544,6 @@ export type Database = {
           user_id: string
           username: string
         }[]
-      }
-      cw_start_attempt: { Args: { _puzzle_id: string }; Returns: Json }
-      cw_submit_attempt: {
-        Args: { _answers: Json; _puzzle_id: string }
-        Returns: Json
-      }
-      cw_use_hint: {
-        Args: { _number: number; _puzzle_id: string }
-        Returns: Json
       }
       debug_book_submission_insert: {
         Args: {
