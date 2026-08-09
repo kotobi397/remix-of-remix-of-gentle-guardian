@@ -305,8 +305,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   }
 
   if (type === 'clubs') {
-    const rows = await fetchRows(
-      `reading_clubs?select=id,updated_at,created_at&is_public=eq.true&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `reading_clubs?select=id,updated_at,created_at&is_public=eq.true&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const c of rows) {
       urls.push({
