@@ -88,6 +88,70 @@ export const onRequest = async (context: any) => {
         : html.replace('</head>', `${ogUrlTag}\n</head>`);
     }
 
+    // Static hub pages ship the homepage <title>/description in the SPA shell,
+    // which Search Console reports as duplicate titles. Give each its own.
+    const staticMeta: Record<string, { title: string; description: string }> = {
+      '/categories': {
+        title: 'أقسام الكتب — تصنيفات المكتبة العربية | منصة كتبي',
+        description:
+          'تصفّح أقسام وتصنيفات الكتب في منصة كتبي: روايات، تنمية ذاتية، تاريخ، دين، علوم وغيرها — تحميل وقراءة مجاناً PDF.',
+      },
+      '/authors': {
+        title: 'المؤلفون — آلاف الكتّاب العرب والعالميين | منصة كتبي',
+        description:
+          'قائمة المؤلفين في منصة كتبي مع كتبهم المتاحة للقراءة والتحميل مجاناً بصيغة PDF.',
+      },
+      '/quotes': {
+        title: 'اقتباسات من الكتب — أجمل المقتطفات | منصة كتبي',
+        description: 'مجموعة اقتباسات مختارة من الكتب والروايات العربية والعالمية في منصة كتبي.',
+      },
+      '/leaderboard': {
+        title: 'لوحة المتصدرين — أنشط القراء والناشرين | منصة كتبي',
+        description: 'تعرّف على أنشط القراء والمساهمين في إثراء مكتبة منصة كتبي.',
+      },
+      '/reading-clubs': {
+        title: 'أندية القراءة — اقرأ مع مجتمعك | منصة كتبي',
+        description: 'انضم إلى أندية القراءة في منصة كتبي وشارك القراءة والنقاش مع قرّاء آخرين.',
+      },
+      '/about-us': {
+        title: 'من نحن — عن منصة كتبي',
+        description: 'تعرّف على منصة كتبي: مكتبة رقمية عربية مجانية لقراءة وتحميل الكتب PDF.',
+      },
+      '/contact-us': {
+        title: 'اتصل بنا — منصة كتبي',
+        description: 'تواصل مع فريق منصة كتبي للاستفسارات والاقتراحات وطلبات الكتب.',
+      },
+      '/upload-book': {
+        title: 'ارفع كتاباً — شارك كتبك مع القرّاء | منصة كتبي',
+        description: 'ارفع كتاباً بصيغة PDF إلى منصة كتبي وشاركه مجاناً مع آلاف القرّاء العرب.',
+      },
+      '/suggestions': {
+        title: 'اقتراحات وطلبات الكتب | منصة كتبي',
+        description: 'اقترح كتاباً تريد إضافته إلى منصة كتبي أو صوّت على اقتراحات القرّاء.',
+      },
+      '/donation': {
+        title: 'ادعم منصة كتبي — تبرّع لاستمرار المكتبة',
+        description: 'ساهم بدعم منصة كتبي لتبقى مكتبة رقمية عربية مجانية للجميع.',
+      },
+    };
+
+    const pageMeta = staticMeta[pathname];
+    if (pageMeta && !noindex) {
+      const esc = (s: string) =>
+        s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      html = html.replace(/<title[^>]*>[\s\S]*?<\/title>/i, `<title>${esc(pageMeta.title)}</title>`);
+      const upsert = (attr: 'name' | 'property', key: string, value: string) => {
+        const re = new RegExp(`<meta[^>]*\\s${attr}=["']${key}["'][^>]*>`, 'i');
+        const tag = `<meta ${attr}="${key}" content="${esc(value)}">`;
+        html = re.test(html) ? html.replace(re, tag) : html.replace('</head>', `${tag}\n</head>`);
+      };
+      upsert('name', 'description', pageMeta.description);
+      upsert('property', 'og:title', pageMeta.title);
+      upsert('property', 'og:description', pageMeta.description);
+      upsert('name', 'twitter:title', pageMeta.title);
+      upsert('name', 'twitter:description', pageMeta.description);
+    }
+
     headers.delete('content-length');
     return new Response(html, { status: response.status, headers });
   } catch (error) {
