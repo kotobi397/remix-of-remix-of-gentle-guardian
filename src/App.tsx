@@ -64,6 +64,7 @@ const ProfileCustomization = lazy(() => import('./pages/ProfileCustomization'));
 const Rewards = lazy(() => import('./pages/Rewards'));
 const Shop = lazy(() => import('./pages/Shop'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const LiteraryCrossword = lazy(() => import('./pages/LiteraryCrossword'));
 import DailyLoginModal from './components/gamification/DailyLoginModal';
 import MysteryDropHunter from './components/gamification/MysteryDropHunter';
 
@@ -176,6 +177,8 @@ function AppContent() {
             <Route path="/rewards" element={<Rewards />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/crossword" element={<LiteraryCrossword />} />
+            <Route path="/games/crossword" element={<LiteraryCrossword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
