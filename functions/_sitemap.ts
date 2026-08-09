@@ -267,8 +267,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   }
 
   if (type === 'categories') {
-    const rows = await fetchRows(
-      `categories?select=name,created_at&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `categories?select=name,created_at&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const c of rows) {
       if (!c.name) continue;
