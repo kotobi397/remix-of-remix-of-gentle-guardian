@@ -31,6 +31,8 @@ const LiteraryCrossword: React.FC = () => {
   const [wrongNumbers, setWrongNumbers] = useState<number[]>([]);
   const [elapsed, setElapsed] = useState(0);
   const [startedLocal, setStartedLocal] = useState(false);
+  const [localStartedAt, setLocalStartedAt] = useState<string | null>(null);
+
   const [result, setResult] = useState<{ score: number; duration: number | null; xp?: number; coins?: number } | null>(null);
 
   const attempt = puzzle?.attempt ?? null;
