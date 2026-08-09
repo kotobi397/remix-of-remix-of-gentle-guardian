@@ -228,8 +228,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
 
   if (type === 'books') {
     const offset = (page - 1) * BOOKS_PER_FILE;
-    const rows = await fetchRows(
-      `book_submissions?select=id,slug,reviewed_at,created_at&status=eq.approved&order=created_at.desc&offset=${offset}&limit=${BOOKS_PER_FILE}`
+    const rows = await fetchPaged(
+      `book_submissions?select=id,slug,reviewed_at,created_at&status=eq.approved&order=created_at.desc`,
+      offset,
+      BOOKS_PER_FILE
     );
     for (const book of rows) {
       const slug = encodePathSegment(book.slug || book.id);
@@ -246,8 +248,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   const offset = (page - 1) * ROWS_PER_FILE;
 
   if (type === 'authors') {
-    const rows = await fetchRows(
-      `authors?select=id,slug,name,created_at&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `authors?select=id,slug,name,created_at&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const a of rows) {
       const p = a.slug && a.slug.trim() !== '' ? a.slug : a.name;
