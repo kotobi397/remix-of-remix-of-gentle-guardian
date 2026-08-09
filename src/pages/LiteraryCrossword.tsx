@@ -30,12 +30,14 @@ const LiteraryCrossword: React.FC = () => {
   const [active, setActive] = useState<{ clue: CrosswordClue | null; cell: string | null }>({ clue: null, cell: null });
   const [wrongNumbers, setWrongNumbers] = useState<number[]>([]);
   const [elapsed, setElapsed] = useState(0);
+  const [startedLocal, setStartedLocal] = useState(false);
   const [result, setResult] = useState<{ score: number; duration: number | null; xp?: number; coins?: number } | null>(null);
 
   const attempt = puzzle?.attempt ?? null;
   const isCompleted = !!attempt?.is_completed;
   const hintsUsed = hint.data?.hints_used ?? attempt?.hints_used ?? 0;
-  const started = !!attempt && !isCompleted;
+  const started = (!!attempt || startedLocal) && !isCompleted;
+
 
   // استعادة الحروف المحفوظة محلياً
   useEffect(() => {
