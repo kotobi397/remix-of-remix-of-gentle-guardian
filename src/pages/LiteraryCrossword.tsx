@@ -30,12 +30,16 @@ const LiteraryCrossword: React.FC = () => {
   const [active, setActive] = useState<{ clue: CrosswordClue | null; cell: string | null }>({ clue: null, cell: null });
   const [wrongNumbers, setWrongNumbers] = useState<number[]>([]);
   const [elapsed, setElapsed] = useState(0);
+  const [startedLocal, setStartedLocal] = useState(false);
+  const [localStartedAt, setLocalStartedAt] = useState<string | null>(null);
+
   const [result, setResult] = useState<{ score: number; duration: number | null; xp?: number; coins?: number } | null>(null);
 
   const attempt = puzzle?.attempt ?? null;
   const isCompleted = !!attempt?.is_completed;
   const hintsUsed = hint.data?.hints_used ?? attempt?.hints_used ?? 0;
-  const started = !!attempt && !isCompleted;
+  const started = (!!attempt || startedLocal) && !isCompleted;
+
 
   // استعادة الحروف المحفوظة محلياً
   useEffect(() => {
@@ -59,13 +63,14 @@ const LiteraryCrossword: React.FC = () => {
 
   // المؤقت
   useEffect(() => {
-    if (!attempt?.started_at || isCompleted) return;
-    const startedAt = new Date(attempt.started_at).getTime();
+    const startedAtRaw = attempt?.started_at ?? localStartedAt;
+    if (!startedAtRaw || isCompleted) return;
+    const startedAt = new Date(startedAtRaw).getTime();
     const tick = () => setElapsed(Math.max(0, Math.floor((Date.now() - startedAt) / 1000)));
     tick();
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
-  }, [attempt?.started_at, isCompleted]);
+  }, [attempt?.started_at, localStartedAt, isCompleted]);
 
   useEffect(() => {
     if (!active.clue && clues.length) setActive({ clue: clues[0], cell: cellKey(clues[0].row, clues[0].col) });
@@ -75,6 +80,43 @@ const LiteraryCrossword: React.FC = () => {
     const answers = extractAnswers(clues, letters);
     return clues.filter((c) => (answers[String(c.number)] ?? '').length === c.length).length;
   }, [clues, letters]);
+
+  // كلمة السؤال النشط (لصندوق الكتابة السريع)
+  const activeWord = useMemo(() => {
+    const c = active.clue;
+    if (!c) return '';
+    let w = '';
+    for (let i = 0; i < c.length; i++) {
+      const r = c.dir === 'across' ? c.row : c.row + i;
+      const col = c.dir === 'across' ? c.col + i : c.col;
+      w += letters[cellKey(r, col)] ?? ' ';
+    }
+    return w.replace(/\s+$/, '');
+  }, [active.clue, letters]);
+
+  const writeWord = (raw: string) => {
+    const c = active.clue;
+    if (!c || !started) return;
+    const chars = raw.replace(/[\s\u064B-\u0652]/g, '').slice(0, c.length).split('');
+    setLetters((prev) => {
+      const next = { ...prev };
+      for (let i = 0; i < c.length; i++) {
+        const r = c.dir === 'across' ? c.row : c.row + i;
+        const col = c.dir === 'across' ? c.col + i : c.col;
+        const k = cellKey(r, col);
+        if (chars[i]) next[k] = chars[i];
+        else delete next[k];
+      }
+      return next;
+    });
+  };
+
+  const goToClue = (delta: number) => {
+    if (!active.clue) return;
+    const idx = clues.findIndex((c) => c.number === active.clue!.number && c.dir === active.clue!.dir);
+    const nextClue = clues[(idx + delta + clues.length) % clues.length];
+    if (nextClue) setActive({ clue: nextClue, cell: cellKey(nextClue.row, nextClue.col) });
+  };
 
   const handleStart = async () => {
     if (!user) {
@@ -86,8 +128,11 @@ const LiteraryCrossword: React.FC = () => {
       toast({ title: 'تعذّر بدء اللعبة', variant: 'destructive' });
       return;
     }
-    toast({ title: 'انطلق العدّاد! ⏱️', description: 'حاول إنهاء الشبكة بأسرع وقت.' });
+    setStartedLocal(true);
+    setLocalStartedAt(res.started_at ?? new Date().toISOString());
+    toast({ title: 'انطلق العدّاد! ⏱️', description: 'اضغط على أي خانة واكتب الحروف، أو اكتب الكلمة كاملة في الصندوق أسفل الشبكة.' });
   };
+
 
   const handleHint = async () => {
     if (!active.clue) return;
@@ -211,14 +256,42 @@ const LiteraryCrossword: React.FC = () => {
                 locked={isCompleted || !started}
               />
 
+              {!started && !isCompleted && (
+                <p className="mt-3 rounded-lg border border-dashed p-3 text-center text-sm text-muted-foreground">
+                  اضغط «ابدأ التحدي» لتفعيل الشبكة، ثم اكتب الحروف داخل الخانات أو الكلمة كاملة في الصندوق.
+                </p>
+              )}
+
               {active.clue && (
-                <div className="mt-3 rounded-lg bg-muted/60 p-3 text-sm">
-                  <span className="font-bold">
-                    {active.clue.number}. {active.clue.dir === 'across' ? 'أفقي' : 'رأسي'} —{' '}
-                  </span>
-                  {active.clue.clue}
+                <div className="mt-3 space-y-2 rounded-lg bg-muted/60 p-3 text-sm">
+                  <div>
+                    <span className="font-bold">
+                      {active.clue.number}. {active.clue.dir === 'across' ? 'أفقي' : 'رأسي'} —{' '}
+                    </span>
+                    {active.clue.clue}{' '}
+                    <span className="text-xs text-muted-foreground">({active.clue.length} حروف)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => goToClue(-1)}>
+                      السابق
+                    </Button>
+                    <input
+                      dir="rtl"
+                      value={activeWord}
+                      disabled={!started}
+                      maxLength={active.clue.length}
+                      onChange={(e) => writeWord(e.target.value)}
+                      placeholder={started ? 'اكتب الكلمة هنا…' : 'ابدأ التحدي أولاً'}
+                      className="flex-1 rounded-md border border-border bg-card px-3 py-2 text-center text-base font-bold tracking-[0.3em] outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                    />
+                    <Button type="button" variant="ghost" size="sm" onClick={() => goToClue(1)}>
+                      التالي
+                    </Button>
+                  </div>
                 </div>
               )}
+
+
 
               <div className="mt-4 flex flex-wrap gap-2">
                 {!started && !isCompleted && (
