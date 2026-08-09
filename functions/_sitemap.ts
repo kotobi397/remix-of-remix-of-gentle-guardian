@@ -171,31 +171,32 @@ export async function buildIndex() {
     countRows('profiles', '&username=not.is.null&author_slug=is.null'),
   ]);
 
-  const now = new Date().toISOString();
+  // No <lastmod> here: it would only reflect sitemap generation time, not real
+  // content changes, which makes crawlers distrust it.
   const entries: { loc: string; lastmod?: string }[] = [
-    { loc: `${SITE}/sitemaps/pages.xml`, lastmod: now },
-    { loc: `${SITE}/sitemaps/latest.xml`, lastmod: now },
+    { loc: `${SITE}/sitemaps/pages.xml` },
+    { loc: `${SITE}/sitemaps/latest.xml` },
   ];
 
   const chunks = (total: number, per: number) => Math.max(1, Math.ceil(total / per));
 
   for (let i = 1; i <= chunks(books, BOOKS_PER_FILE); i++) {
-    entries.push({ loc: `${SITE}/sitemaps/books-${i}.xml`, lastmod: now });
+    entries.push({ loc: `${SITE}/sitemaps/books-${i}.xml` });
   }
   for (let i = 1; i <= chunks(authors, ROWS_PER_FILE); i++) {
-    entries.push({ loc: `${SITE}/sitemaps/authors-${i}.xml`, lastmod: now });
+    entries.push({ loc: `${SITE}/sitemaps/authors-${i}.xml` });
   }
   for (let i = 1; i <= chunks(categories, ROWS_PER_FILE); i++) {
-    entries.push({ loc: `${SITE}/sitemaps/categories-${i}.xml`, lastmod: now });
+    entries.push({ loc: `${SITE}/sitemaps/categories-${i}.xml` });
   }
   if (clubs > 0) {
     for (let i = 1; i <= chunks(clubs, ROWS_PER_FILE); i++) {
-      entries.push({ loc: `${SITE}/sitemaps/clubs-${i}.xml`, lastmod: now });
+      entries.push({ loc: `${SITE}/sitemaps/clubs-${i}.xml` });
     }
   }
   if (users > 0) {
     for (let i = 1; i <= chunks(users, ROWS_PER_FILE); i++) {
-      entries.push({ loc: `${SITE}/sitemaps/users-${i}.xml`, lastmod: now });
+      entries.push({ loc: `${SITE}/sitemaps/users-${i}.xml` });
     }
   }
 
