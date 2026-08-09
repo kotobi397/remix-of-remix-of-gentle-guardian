@@ -117,6 +117,27 @@ export async function fetchRows(path: string) {
   return (await res.json()) as any[];
 }
 
+/**
+ * Fetches `count` rows starting at `offset`, transparently paginating around the
+ * PostgREST 1000-row cap. `path` must NOT contain offset/limit.
+ */
+export async function fetchPaged(path: string, offset: number, count: number) {
+  const out: any[] = [];
+  for (let start = 0; start < count; start += PAGE_SIZE) {
+    const from = offset + start;
+    const to = Math.min(from + PAGE_SIZE, offset + count) - 1;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: { ...headers, 'Range-Unit': 'items', Range: `${from}-${to}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) break;
+    const rows = (await res.json()) as any[];
+    out.push(...rows);
+    if (rows.length < to - from + 1) break;
+  }
+  return out;
+}
+
 export const STATIC_PAGES: Url[] = [
   { url: `${SITE}/`, changefreq: 'daily', priority: 1.0 },
   { url: `${SITE}/categories`, changefreq: 'weekly', priority: 0.9 },
