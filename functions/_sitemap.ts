@@ -6,10 +6,16 @@ export const SUPABASE_URL = 'https://kydmyxsgyxeubhmqzrgo.supabase.co';
 export const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5ZG15eHNneXhldWJobXF6cmdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0ODQ3NjQsImV4cCI6MjA2MjA2MDc2NH0.b-ckDfOmmf2x__FG5Snm9px8j4pqPke5Ra1RgoGEqP0';
 
-// Rows fetched per child sitemap. Books now produce 1 URL per row (canonical
-// /book/<slug> only), so 20000 rows = 20k URLs — well under the 50k limit.
-export const BOOKS_PER_FILE = 20000;
-export const ROWS_PER_FILE = 20000;
+// Rows per child sitemap. Books produce 1 URL per row (canonical /book/<slug>),
+// so 10000 rows = 10k URLs — well under the 50k limit.
+export const BOOKS_PER_FILE = 10000;
+export const ROWS_PER_FILE = 10000;
+
+// Supabase/PostgREST hard-caps a single response at 1000 rows (max-rows).
+// Anything above this MUST be fetched page by page with Range headers,
+// otherwise sitemaps silently truncate to the first 1000 URLs.
+export const PAGE_SIZE = 1000;
+
 
 
 export const headers = {
