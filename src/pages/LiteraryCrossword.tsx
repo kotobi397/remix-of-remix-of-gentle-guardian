@@ -256,13 +256,41 @@ const LiteraryCrossword: React.FC = () => {
                 locked={isCompleted || !started}
               />
 
+              {!started && !isCompleted && (
+                <p className="mt-3 rounded-lg border border-dashed p-3 text-center text-sm text-muted-foreground">
+                  اضغط «ابدأ التحدي» لتفعيل الشبكة، ثم اكتب الحروف داخل الخانات أو الكلمة كاملة في الصندوق.
+                </p>
+              )}
+
               {active.clue && (
-                <div className="mt-3 rounded-lg bg-muted/60 p-3 text-sm">
-                  <span className="font-bold">
-                    {active.clue.number}. {active.clue.dir === 'across' ? 'أفقي' : 'رأسي'} —{' '}
-                  </span>
-                  {active.clue.clue}
+                <div className="mt-3 space-y-2 rounded-lg bg-muted/60 p-3 text-sm">
+                  <div>
+                    <span className="font-bold">
+                      {active.clue.number}. {active.clue.dir === 'across' ? 'أفقي' : 'رأسي'} —{' '}
+                    </span>
+                    {active.clue.clue}{' '}
+                    <span className="text-xs text-muted-foreground">({active.clue.length} حروف)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => goToClue(-1)}>
+                      السابق
+                    </Button>
+                    <input
+                      dir="rtl"
+                      value={activeWord}
+                      disabled={!started}
+                      maxLength={active.clue.length}
+                      onChange={(e) => writeWord(e.target.value)}
+                      placeholder={started ? 'اكتب الكلمة هنا…' : 'ابدأ التحدي أولاً'}
+                      className="flex-1 rounded-md border border-border bg-card px-3 py-2 text-center text-base font-bold tracking-[0.3em] outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                    />
+                    <Button type="button" variant="ghost" size="sm" onClick={() => goToClue(1)}>
+                      التالي
+                    </Button>
+                  </div>
                 </div>
+              )}
+
               )}
 
               <div className="mt-4 flex flex-wrap gap-2">
