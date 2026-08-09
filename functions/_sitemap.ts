@@ -191,9 +191,7 @@ export async function buildChild(type: string, page: number): Promise<string | n
       const slug = encodePathSegment(book.slug || book.id);
       const lastmod = iso(book.reviewed_at || book.created_at);
       urls.push({ url: `${SITE}/book/${slug}`, lastmod, changefreq: 'daily', priority: 0.9 });
-      for (const prefix of ['tahmil', 'qiraa', 'molakhas']) {
-        urls.push({ url: `${SITE}/${prefix}/${slug}`, lastmod, changefreq: 'daily', priority: 0.8 });
-      }
+
     }
     return renderUrlset(urls);
   }
