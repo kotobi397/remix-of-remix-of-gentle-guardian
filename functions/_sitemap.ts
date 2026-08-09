@@ -6,10 +6,16 @@ export const SUPABASE_URL = 'https://kydmyxsgyxeubhmqzrgo.supabase.co';
 export const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5ZG15eHNneXhldWJobXF6cmdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0ODQ3NjQsImV4cCI6MjA2MjA2MDc2NH0.b-ckDfOmmf2x__FG5Snm9px8j4pqPke5Ra1RgoGEqP0';
 
-// Rows fetched per child sitemap. Books now produce 1 URL per row (canonical
-// /book/<slug> only), so 20000 rows = 20k URLs — well under the 50k limit.
-export const BOOKS_PER_FILE = 20000;
-export const ROWS_PER_FILE = 20000;
+// Rows per child sitemap. Books produce 1 URL per row (canonical /book/<slug>),
+// so 10000 rows = 10k URLs — well under the 50k limit.
+export const BOOKS_PER_FILE = 10000;
+export const ROWS_PER_FILE = 10000;
+
+// Supabase/PostgREST hard-caps a single response at 1000 rows (max-rows).
+// Anything above this MUST be fetched page by page with Range headers,
+// otherwise sitemaps silently truncate to the first 1000 URLs.
+export const PAGE_SIZE = 1000;
+
 
 
 export const headers = {
@@ -111,6 +117,27 @@ export async function fetchRows(path: string) {
   return (await res.json()) as any[];
 }
 
+/**
+ * Fetches `count` rows starting at `offset`, transparently paginating around the
+ * PostgREST 1000-row cap. `path` must NOT contain offset/limit.
+ */
+export async function fetchPaged(path: string, offset: number, count: number) {
+  const out: any[] = [];
+  for (let start = 0; start < count; start += PAGE_SIZE) {
+    const from = offset + start;
+    const to = Math.min(from + PAGE_SIZE, offset + count) - 1;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: { ...headers, 'Range-Unit': 'items', Range: `${from}-${to}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) break;
+    const rows = (await res.json()) as any[];
+    out.push(...rows);
+    if (rows.length < to - from + 1) break;
+  }
+  return out;
+}
+
 export const STATIC_PAGES: Url[] = [
   { url: `${SITE}/`, changefreq: 'daily', priority: 1.0 },
   { url: `${SITE}/categories`, changefreq: 'weekly', priority: 0.9 },
@@ -201,8 +228,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
 
   if (type === 'books') {
     const offset = (page - 1) * BOOKS_PER_FILE;
-    const rows = await fetchRows(
-      `book_submissions?select=id,slug,reviewed_at,created_at&status=eq.approved&order=created_at.desc&offset=${offset}&limit=${BOOKS_PER_FILE}`
+    const rows = await fetchPaged(
+      `book_submissions?select=id,slug,reviewed_at,created_at&status=eq.approved&order=created_at.desc`,
+      offset,
+      BOOKS_PER_FILE
     );
     for (const book of rows) {
       const slug = encodePathSegment(book.slug || book.id);
@@ -219,8 +248,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   const offset = (page - 1) * ROWS_PER_FILE;
 
   if (type === 'authors') {
-    const rows = await fetchRows(
-      `authors?select=id,slug,name,created_at&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `authors?select=id,slug,name,created_at&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const a of rows) {
       const p = a.slug && a.slug.trim() !== '' ? a.slug : a.name;
@@ -236,8 +267,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   }
 
   if (type === 'categories') {
-    const rows = await fetchRows(
-      `categories?select=name,created_at&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `categories?select=name,created_at&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const c of rows) {
       if (!c.name) continue;
@@ -254,8 +287,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   // Public member profiles. Profiles that own books redirect to /author/... ,
   // so they are excluded here to avoid redirect duplicates in the sitemap.
   if (type === 'users') {
-    const rows = await fetchRows(
-      `profiles?select=id,username,last_seen,created_at&username=not.is.null&author_slug=is.null&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `profiles?select=id,username,last_seen,created_at&username=not.is.null&author_slug=is.null&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const u of rows) {
       if (!u.username) continue;
@@ -270,8 +305,10 @@ export async function buildChild(type: string, page: number): Promise<string | n
   }
 
   if (type === 'clubs') {
-    const rows = await fetchRows(
-      `reading_clubs?select=id,updated_at,created_at&is_public=eq.true&order=created_at.desc&offset=${offset}&limit=${ROWS_PER_FILE}`
+    const rows = await fetchPaged(
+      `reading_clubs?select=id,updated_at,created_at&is_public=eq.true&order=created_at.desc`,
+      offset,
+      ROWS_PER_FILE
     );
     for (const c of rows) {
       urls.push({
