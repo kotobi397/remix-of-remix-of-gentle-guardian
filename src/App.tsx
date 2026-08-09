@@ -177,6 +177,8 @@ function AppContent() {
             <Route path="/rewards" element={<Rewards />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/crossword" element={<LiteraryCrossword />} />
+            <Route path="/games/crossword" element={<LiteraryCrossword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
