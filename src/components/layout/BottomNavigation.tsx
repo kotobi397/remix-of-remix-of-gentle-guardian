@@ -60,7 +60,6 @@ const BottomNavigation: React.FC = () => {
     { key: 'quotes', label: 'اقتباسات', icon: <QuoteIcon className="h-[22px] w-[22px]" />, path: '/quotes' },
     { key: 'requests', label: 'اطلب كتاباً', icon: <BookRequestIcon className="h-[22px] w-[22px]" />, path: '/book-requests' },
     { key: 'rewards', label: 'مكافآت', icon: <IconTrophy className="h-[22px] w-[22px]" />, path: '/rewards' },
-    { key: 'crossword', label: 'متقاطعة', icon: <Sparkles className="h-[22px] w-[22px]" />, path: '/crossword' },
 
     { key: 'mybooks', label: 'كتبي', icon: <MyBooksIcon className="h-[22px] w-[22px]" />, path: '/my-books' },
     { key: 'profile', label: 'حسابي', icon: <ProfileIcon className="h-[22px] w-[22px]" />, path: '/profile' },
