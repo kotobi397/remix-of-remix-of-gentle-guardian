@@ -6,10 +6,11 @@ export const SUPABASE_URL = 'https://kydmyxsgyxeubhmqzrgo.supabase.co';
 export const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5ZG15eHNneXhldWJobXF6cmdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0ODQ3NjQsImV4cCI6MjA2MjA2MDc2NH0.b-ckDfOmmf2x__FG5Snm9px8j4pqPke5Ra1RgoGEqP0';
 
-// Rows fetched per child sitemap. Books produce 4 URLs per row (book + 3 landings),
-// so 5000 rows = 20k URLs — well under the 50k limit and fast to render.
-export const BOOKS_PER_FILE = 5000;
+// Rows fetched per child sitemap. Books now produce 1 URL per row (canonical
+// /book/<slug> only), so 20000 rows = 20k URLs — well under the 50k limit.
+export const BOOKS_PER_FILE = 20000;
 export const ROWS_PER_FILE = 20000;
+
 
 export const headers = {
   apikey: SUPABASE_ANON_KEY,
@@ -191,9 +192,7 @@ export async function buildChild(type: string, page: number): Promise<string | n
       const slug = encodePathSegment(book.slug || book.id);
       const lastmod = iso(book.reviewed_at || book.created_at);
       urls.push({ url: `${SITE}/book/${slug}`, lastmod, changefreq: 'daily', priority: 0.9 });
-      for (const prefix of ['tahmil', 'qiraa', 'molakhas']) {
-        urls.push({ url: `${SITE}/${prefix}/${slug}`, lastmod, changefreq: 'daily', priority: 0.8 });
-      }
+
     }
     return renderUrlset(urls);
   }
@@ -208,11 +207,12 @@ export async function buildChild(type: string, page: number): Promise<string | n
     for (const book of rows) {
       const slug = encodePathSegment(book.slug || book.id);
       const lastmod = iso(book.reviewed_at || book.created_at);
+      // Only the canonical book page is submitted. /tahmil, /qiraa and /molakhas
+      // are near-duplicate landings — keeping them out of the sitemap focuses
+      // Google's crawl budget on the pages we actually want indexed.
       urls.push({ url: `${SITE}/book/${slug}`, lastmod, changefreq: 'monthly', priority: 0.8 });
-      for (const prefix of ['tahmil', 'qiraa', 'molakhas']) {
-        urls.push({ url: `${SITE}/${prefix}/${slug}`, lastmod, changefreq: 'monthly', priority: 0.7 });
-      }
     }
+
     return renderUrlset(urls);
   }
 
