@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kotobi</string>
+    <string name="title_activity_main">Kotobi</string>
+    <string name="package_name">com.kotobi.app</string>
+    <string name="custom_url_scheme">com.kotobi.app</string>
+</resources>
