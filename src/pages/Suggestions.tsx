@@ -783,6 +783,7 @@ function SuggestionCard({
                           <UnifiedProfileLink userId={reply.user_id} className="hover:text-primary transition-colors">
                             <span className="text-xs font-bold text-gray-300 hover:text-primary cursor-pointer">{reply.profiles?.username}</span>
                           </UnifiedProfileLink>
+                          <SupportBadge userId={reply.user_id} email={reply.profiles?.email} username={reply.profiles?.username} size={14} />
                           <span className="text-gray-500 text-[10px]">
                             {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true, locale: ar })}
                           </span>
