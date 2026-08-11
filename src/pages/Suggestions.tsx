@@ -577,7 +577,7 @@ function SuggestionCard({
   onDeleteReply
 }: any) {
   const authorName = suggestion.profiles?.username || "مستخدم";
-  const isSupport = suggestion.profiles?.email === SUPPORT_EMAIL;
+  const isSupport = suggestion.profiles?.email === SUPPORT_EMAIL || isKotobiSupportAccount({ id: suggestion.user_id, email: suggestion.profiles?.email, username: suggestion.profiles?.username });
   const isOwner = user && user.id === suggestion.user_id;
 
   return (
