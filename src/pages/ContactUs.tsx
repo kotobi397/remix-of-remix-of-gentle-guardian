@@ -33,7 +33,34 @@ const ContactUs = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailValidationError, setEmailValidationError] = useState('');
+  const [openingSupportChat, setOpeningSupportChat] = useState(false);
   const { toast } = useToast();
+
+  // فتح محادثة الدعم الرسمية مباشرة
+  const openSupportConversation = async () => {
+    if (!user) return;
+    const targetId = supportUserId || KOTOBI_SUPPORT_USER_ID;
+    setOpeningSupportChat(true);
+    try {
+      const { data, error } = await supabase.rpc('get_or_create_conversation', {
+        p_user1_id: user.id,
+        p_user2_id: targetId,
+      });
+      if (error || !data) {
+        console.error('Error opening support conversation:', error);
+        toast({
+          title: 'تعذر فتح المحادثة',
+          description: 'حاول مرة أخرى أو راسل الدعم من ملفه الشخصي.',
+          variant: 'destructive',
+        });
+        navigate('/user/support kotobi');
+        return;
+      }
+      navigate(`/messages?chat=${data}`);
+    } finally {
+      setOpeningSupportChat(false);
+    }
+  };
 
   // إعدادات EmailJS الصحيحة
   const EMAILJS_SERVICE_ID = 'service_o4swomd';
