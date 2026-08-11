@@ -309,6 +309,8 @@ const PublicUserProfile: React.FC = () => {
                   {profile.is_verified && (
                     <VerifiedIcon size={22} className="flex-shrink-0 w-5 h-5" />
                   )}
+                  <SupportBadge userId={profile.id} username={profile.username} size={24} withLabel />
+                  
                   
                 </div>
 
