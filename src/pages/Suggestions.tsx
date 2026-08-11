@@ -56,6 +56,10 @@ interface Suggestion {
   replies?: SuggestionReply[];
 }
 
+import SupportBadge from '@/components/support/SupportBadge';
+import KotobiSupportIcon from '@/components/icons/KotobiSupportIcon';
+import { isKotobiSupportAccount } from '@/lib/supportAccount';
+
 const SUPPORT_EMAIL = "h85342727@gmail.com";
 
 export default function Suggestions() {
