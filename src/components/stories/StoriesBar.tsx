@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import SupportBadge from '@/components/support/SupportBadge';
 import { Loader2 } from '@/components/icons/kotobi-lucide';
 import { Plus } from '@/components/icons/kotobi-lucide';
 import { motion } from 'framer-motion';
@@ -240,6 +241,7 @@ const StoriesBar: React.FC = () => {
                 )}>
                   {group.user.id === user?.id ? 'قصتك' : group.user.username}
                 </span>
+                <SupportBadge userId={group.user.id} username={group.user.username} size={13} />
               </motion.button>
             ))}
           </div>

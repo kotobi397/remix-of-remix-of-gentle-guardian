@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import SupportBadge from '@/components/support/SupportBadge';
 import { Volume2, VolumeX } from '@/components/icons/kotobi-lucide';
 import { X, ChevronLeft, ChevronRight, Trash2, Eye, Pause, Play, Heart, BookOpen, Star } from '@/components/icons/kotobi-lucide';
 import AddToHighlightDialog from './AddToHighlightDialog';
