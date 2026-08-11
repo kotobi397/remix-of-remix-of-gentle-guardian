@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { optimizeImageUrl } from '@/utils/imageProxy';
 import { motion } from 'framer-motion';
 import { KOTOBI_AI_USER_ID, KOTOBI_AI_AVATAR_URL } from '@/utils/kotobiAi';
+import SupportBadge from '@/components/support/SupportBadge';
 
 interface ConversationsListProps {
   conversations: Conversation[];
