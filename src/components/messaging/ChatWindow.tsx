@@ -370,16 +370,21 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     )}
                   >
                     {!isOwn && (
-                      <Avatar className="h-6 w-6 flex-shrink-0 order-2 mb-4">
-                        <AvatarImage src={isAiBot ? KOTOBI_AI_AVATAR_URL : (getAvatarUrl(otherUser.avatar_url) || '')} alt={otherUser.username} />
-                        <AvatarFallback className={cn(
-                          isAiBot
-                            ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white"
-                            : "bg-primary/10 text-primary text-[10px]"
-                        )}>
-                          {isAiBot ? <Bot className="h-3 w-3" /> : getInitials(otherUser.username)}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative flex-shrink-0 order-2 mb-4">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage src={isAiBot ? KOTOBI_AI_AVATAR_URL : (getAvatarUrl(otherUser.avatar_url) || '')} alt={otherUser.username} />
+                          <AvatarFallback className={cn(
+                            isAiBot
+                              ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white"
+                              : "bg-primary/10 text-primary text-[10px]"
+                          )}>
+                            {isAiBot ? <Bot className="h-3 w-3" /> : getInitials(otherUser.username)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {isSupportAccount && (
+                          <SupportBadge force size={12} className="absolute -bottom-1 -left-1" />
+                        )}
+                      </div>
                     )}
                     
                     <div className={cn(
