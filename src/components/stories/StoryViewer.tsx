@@ -269,8 +269,9 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
               <AvatarFallback>{group.user.username?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="text-white font-semibold text-sm">
+              <span className="text-white font-semibold text-sm flex items-center gap-1">
                 {isMyStory ? 'قصتك' : group.user.username}
+                <SupportBadge userId={group.user.id} username={group.user.username} size={15} />
               </span>
               <span className="text-white/70 text-xs">
                 {formatDistanceToNow(new Date(currentStory.created_at), {
