@@ -320,19 +320,13 @@ const ContactUs = () => {
               </div>
               {user ? (
                 <Button
-                  onClick={() => {
-                    if (supportUserId) {
-                      navigate(`/messages?userId=${supportUserId}`);
-                    } else {
-                      // فتح صفحة الملف الشخصي للدعم
-                      navigate('/user/support kotobi');
-                    }
-                  }}
+                  onClick={openSupportConversation}
+                  disabled={openingSupportChat}
                   className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-black"
                   size="lg"
                 >
                   <MessageCircle className="w-5 h-5 ml-2" />
-                  راسل دعم كتبي الآن
+                  {openingSupportChat ? 'جاري فتح المحادثة...' : 'راسل دعم كتبي الآن'}
                   <ExternalLink className="w-4 h-4 mr-2" />
                 </Button>
               ) : (
