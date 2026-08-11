@@ -19,6 +19,7 @@ import { FollowOptionsPopover } from '@/components/authors/FollowOptionsPopover'
 import { formatDistanceToNow, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import VerifiedIcon from '@/components/icons/VerifiedIcon';
+import SupportBadge from '@/components/support/SupportBadge';
 import { getCategoryInArabic } from '@/utils/categoryTranslation';
 import { ProfileSectionTabs } from '@/components/profile/ProfileSectionTabs';
 import HighlightsBar from '@/components/stories/HighlightsBar';
