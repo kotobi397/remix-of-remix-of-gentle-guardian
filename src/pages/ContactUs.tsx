@@ -19,6 +19,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Toaster } from '@/components/ui/sonner';
 import { useNavigate } from 'react-router-dom';
+import { KOTOBI_SUPPORT_USER_ID } from '@/lib/supportAccount';
 
 const ContactUs = () => {
   const { user } = useAuth();
