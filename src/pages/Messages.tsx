@@ -44,11 +44,16 @@ const Messages: React.FC = () => {
 
   useEffect(() => {
     const chatId = searchParams.get('chat');
-    if (chatId && conversations.length > 0) {
+    const targetUserId = searchParams.get('userId');
+    if (conversations.length === 0) return;
+    if (chatId) {
       const conv = conversations.find(c => c.id === chatId);
-      if (conv) {
-        setSelectedConversation(conv);
-      }
+      if (conv) setSelectedConversation(conv);
+      return;
+    }
+    if (targetUserId) {
+      const conv = conversations.find(c => c.other_user?.id === targetUserId);
+      if (conv) setSelectedConversation(conv);
     }
   }, [searchParams, conversations]);
 
