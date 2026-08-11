@@ -56,6 +56,10 @@ interface Suggestion {
   replies?: SuggestionReply[];
 }
 
+import SupportBadge from '@/components/support/SupportBadge';
+import KotobiSupportIcon from '@/components/icons/KotobiSupportIcon';
+import { isKotobiSupportAccount } from '@/lib/supportAccount';
+
 const SUPPORT_EMAIL = "h85342727@gmail.com";
 
 export default function Suggestions() {
@@ -577,7 +581,7 @@ function SuggestionCard({
   onDeleteReply
 }: any) {
   const authorName = suggestion.profiles?.username || "مستخدم";
-  const isSupport = suggestion.profiles?.email === SUPPORT_EMAIL;
+  const isSupport = suggestion.profiles?.email === SUPPORT_EMAIL || isKotobiSupportAccount({ id: suggestion.user_id, email: suggestion.profiles?.email, username: suggestion.profiles?.username });
   const isOwner = user && user.id === suggestion.user_id;
 
   return (
@@ -602,8 +606,9 @@ function SuggestionCard({
                   <span className="font-bold text-[#e1e1e1] text-[15px] hover:text-primary cursor-pointer">{authorName}</span>
                 </UnifiedProfileLink>
                 {isSupport && (
-                  <span className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold border border-primary/20">
-                    الدعم الفني
+                  <span className="inline-flex items-center gap-1 bg-amber-400/10 text-amber-500 text-[10px] px-2 py-0.5 rounded-full font-bold border border-amber-400/40">
+                    <KotobiSupportIcon size={13} />
+                    الدعم الرسمي لكتبي
                   </span>
                 )}
                 <span className="text-gray-500 text-[11px] font-medium">
@@ -783,6 +788,7 @@ function SuggestionCard({
                           <UnifiedProfileLink userId={reply.user_id} className="hover:text-primary transition-colors">
                             <span className="text-xs font-bold text-gray-300 hover:text-primary cursor-pointer">{reply.profiles?.username}</span>
                           </UnifiedProfileLink>
+                          <SupportBadge userId={reply.user_id} email={reply.profiles?.email} username={reply.profiles?.username} size={14} />
                           <span className="text-gray-500 text-[10px]">
                             {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true, locale: ar })}
                           </span>

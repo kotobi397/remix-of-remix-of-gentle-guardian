@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import SupportBadge from '@/components/support/SupportBadge';
 import { Volume2, VolumeX } from '@/components/icons/kotobi-lucide';
 import { X, ChevronLeft, ChevronRight, Trash2, Eye, Pause, Play, Heart, BookOpen, Star } from '@/components/icons/kotobi-lucide';
 import AddToHighlightDialog from './AddToHighlightDialog';
@@ -269,8 +270,9 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
               <AvatarFallback>{group.user.username?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="text-white font-semibold text-sm">
+              <span className="text-white font-semibold text-sm flex items-center gap-1">
                 {isMyStory ? 'قصتك' : group.user.username}
+                <SupportBadge userId={group.user.id} username={group.user.username} size={15} />
               </span>
               <span className="text-white/70 text-xs">
                 {formatDistanceToNow(new Date(currentStory.created_at), {

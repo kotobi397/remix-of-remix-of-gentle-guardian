@@ -19,6 +19,7 @@ import { FollowOptionsPopover } from '@/components/authors/FollowOptionsPopover'
 import { formatDistanceToNow, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import VerifiedIcon from '@/components/icons/VerifiedIcon';
+import SupportBadge from '@/components/support/SupportBadge';
 import { getCategoryInArabic } from '@/utils/categoryTranslation';
 import { ProfileSectionTabs } from '@/components/profile/ProfileSectionTabs';
 import HighlightsBar from '@/components/stories/HighlightsBar';
@@ -309,6 +310,8 @@ const PublicUserProfile: React.FC = () => {
                   {profile.is_verified && (
                     <VerifiedIcon size={22} className="flex-shrink-0 w-5 h-5" />
                   )}
+                  <SupportBadge userId={profile.id} username={profile.username} size={24} withLabel />
+                  
                   
                 </div>
 

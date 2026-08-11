@@ -11,6 +11,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { UnifiedProfileLink } from '@/components/profile/UnifiedProfileLink';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import SupportBadge from '@/components/support/SupportBadge';
 
 interface QuoteRepliesProps {
   quoteId: string;
@@ -106,7 +107,7 @@ export const QuoteReplies: React.FC<QuoteRepliesProps> = ({ quoteId }) => {
                         <div className="bg-muted/50 rounded-xl p-3">
                           <div className="flex items-center justify-between gap-2 mb-1">
                             <UnifiedProfileLink userId={reply.user_id} username={reply.username}>
-                              <span className="text-sm font-semibold text-foreground hover:text-primary transition-colors">{reply.username}</span>
+                              <span className="text-sm font-semibold text-foreground hover:text-primary transition-colors">{reply.username}</span><SupportBadge userId={(reply as any).user_id} username={reply.username} size={14} className="mr-1" />
                             </UnifiedProfileLink>
                             
                             <span className="text-xs text-muted-foreground flex-shrink-0">
