@@ -22,6 +22,8 @@ import { toast } from 'sonner';
 import { uploadVoiceMessage } from '@/utils/uploadVoiceMessage';
 import VoiceMessageBubble from './VoiceMessageBubble';
 import { MessageBubbleActions } from './MessageBubbleActions';
+import SupportBadge from '@/components/support/SupportBadge';
+import { isKotobiSupportAccount } from '@/lib/supportAccount';
 
 interface ChatWindowProps {
   conversationId: string;
