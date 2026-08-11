@@ -602,8 +602,9 @@ function SuggestionCard({
                   <span className="font-bold text-[#e1e1e1] text-[15px] hover:text-primary cursor-pointer">{authorName}</span>
                 </UnifiedProfileLink>
                 {isSupport && (
-                  <span className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold border border-primary/20">
-                    الدعم الفني
+                  <span className="inline-flex items-center gap-1 bg-amber-400/10 text-amber-500 text-[10px] px-2 py-0.5 rounded-full font-bold border border-amber-400/40">
+                    <KotobiSupportIcon size={13} />
+                    الدعم الرسمي لكتبي
                   </span>
                 )}
                 <span className="text-gray-500 text-[11px] font-medium">
