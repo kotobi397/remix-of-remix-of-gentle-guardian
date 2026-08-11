@@ -19,6 +19,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Toaster } from '@/components/ui/sonner';
 import { useNavigate } from 'react-router-dom';
+import { KOTOBI_SUPPORT_USER_ID } from '@/lib/supportAccount';
 
 const ContactUs = () => {
   const { user } = useAuth();
@@ -33,7 +34,34 @@ const ContactUs = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailValidationError, setEmailValidationError] = useState('');
+  const [openingSupportChat, setOpeningSupportChat] = useState(false);
   const { toast } = useToast();
+
+  // فتح محادثة الدعم الرسمية مباشرة
+  const openSupportConversation = async () => {
+    if (!user) return;
+    const targetId = supportUserId || KOTOBI_SUPPORT_USER_ID;
+    setOpeningSupportChat(true);
+    try {
+      const { data, error } = await supabase.rpc('get_or_create_conversation', {
+        p_user1_id: user.id,
+        p_user2_id: targetId,
+      });
+      if (error || !data) {
+        console.error('Error opening support conversation:', error);
+        toast({
+          title: 'تعذر فتح المحادثة',
+          description: 'حاول مرة أخرى أو راسل الدعم من ملفه الشخصي.',
+          variant: 'destructive',
+        });
+        navigate('/user/support kotobi');
+        return;
+      }
+      navigate(`/messages?chat=${data}`);
+    } finally {
+      setOpeningSupportChat(false);
+    }
+  };
 
   // إعدادات EmailJS الصحيحة
   const EMAILJS_SERVICE_ID = 'service_o4swomd';
@@ -320,19 +348,13 @@ const ContactUs = () => {
               </div>
               {user ? (
                 <Button
-                  onClick={() => {
-                    if (supportUserId) {
-                      navigate(`/messages?userId=${supportUserId}`);
-                    } else {
-                      // فتح صفحة الملف الشخصي للدعم
-                      navigate('/user/support kotobi');
-                    }
-                  }}
+                  onClick={openSupportConversation}
+                  disabled={openingSupportChat}
                   className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-black"
                   size="lg"
                 >
                   <MessageCircle className="w-5 h-5 ml-2" />
-                  راسل دعم كتبي الآن
+                  {openingSupportChat ? 'جاري فتح المحادثة...' : 'راسل دعم كتبي الآن'}
                   <ExternalLink className="w-4 h-4 mr-2" />
                 </Button>
               ) : (
