@@ -72,6 +72,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   }, []);
 
   const isAiBot = otherUser.id === KOTOBI_AI_USER_ID;
+  const isSupportAccount = isKotobiSupportAccount({ id: otherUser.id, username: otherUser.username });
 
   const getInitials = (name: string) => {
     return name.split(' ').map(part => part[0]).join('').toUpperCase().substring(0, 2);
