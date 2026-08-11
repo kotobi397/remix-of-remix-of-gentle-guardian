@@ -298,9 +298,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         >
           <div className="flex items-center gap-1.5">
             <h3 className="font-semibold text-foreground text-sm truncate">{otherUser.username}</h3>
+            {isSupportAccount && <SupportBadge force size={18} />}
             {isAiBot && (
               <span className="text-[9px] bg-gradient-to-r from-blue-500/15 to-purple-500/15 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded-md font-bold">
                 AI
+              </span>
+            )}
+            {isSupportAccount && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded-md font-bold border border-amber-400/40 bg-amber-400/10 text-amber-500">
+                الدعم الرسمي
               </span>
             )}
           </div>
