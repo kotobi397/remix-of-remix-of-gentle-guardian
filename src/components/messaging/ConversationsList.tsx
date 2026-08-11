@@ -141,6 +141,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({
                     )}>
                       {conv.other_user?.username || 'مستخدم'}
                     </span>
+                    <SupportBadge userId={conv.other_user?.id} username={conv.other_user?.username} size={15} />
                     {isBotConv && (
                       <span className="text-[9px] bg-gradient-to-r from-blue-500/15 to-purple-500/15 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">
                         AI
