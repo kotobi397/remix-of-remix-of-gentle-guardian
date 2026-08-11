@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { KOTOBI_AI_USER_ID } from '@/utils/kotobiAi';
 import { UnifiedProfileLink } from '@/components/profile/UnifiedProfileLink';
+import SupportBadge from '@/components/support/SupportBadge';
 
 type Period = 'week' | 'month' | 'alltime';
 
@@ -75,7 +76,7 @@ const Leaderboard: React.FC = () => {
                       className="font-bold truncate"
                       style={{ color: entry.selected_name_color ?? undefined }}
                     >
-                      {entry.username ?? 'قارئ'}
+                      {entry.username ?? 'قارئ'}<SupportBadge userId={entry.user_id} username={entry.username ?? undefined} size={14} className="mr-1" />
                     </div>
                     {entry.current_streak && entry.current_streak > 0 && (
                       <div className="text-xs text-muted-foreground flex items-center gap-1">

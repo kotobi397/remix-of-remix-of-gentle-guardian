@@ -23,6 +23,7 @@ import { QuoteShareImage } from './QuoteShareImage';
 import { QuoteLikeButton } from './QuoteLikeButton';
 import { QuoteReplies } from './QuoteReplies';
 import { resolveKotobiAiAvatar, isKotobiAiUser } from '@/utils/kotobiAi';
+import SupportBadge from '@/components/support/SupportBadge';
 
 interface QuoteCardProps {
   quote: Quote;
@@ -129,7 +130,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({ quote, onDelete, onUpdate 
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 leading-tight">
-                  <p className="font-semibold text-[13px] text-foreground truncate">{quote.username}</p>
+                  <p className="font-semibold text-[13px] text-foreground truncate flex items-center gap-1">{quote.username}<SupportBadge userId={(quote as any).user_id} username={quote.username} size={14} /></p>
                   <p className="text-[10px] text-muted-foreground">{timeAgo}</p>
                 </div>
               </UnifiedProfileLink>

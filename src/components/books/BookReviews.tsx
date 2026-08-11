@@ -17,6 +17,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { getAvatarFrameClass, getNameColorStyle, getCommentHighlightStyle } from '@/lib/cosmetics';
 import { KotobiBadge } from '@/components/badges/KotobiBadge';
+import SupportBadge from '@/components/support/SupportBadge';
 
 interface Review {
   id: string;
@@ -551,7 +552,7 @@ const BookReviews: React.FC<BookReviewsProps> = ({ bookId, bookTitle }) => {
                                 className="font-bold hover:text-primary transition-colors truncate min-w-0"
                                 style={getNameColorStyle(review.selected_name_color) || undefined}
                               >
-                                {review.profiles?.username || review.profiles?.email?.split('@')[0] || 'مستخدم'}
+                                {review.profiles?.username || review.profiles?.email?.split('@')[0] || 'مستخدم'}<SupportBadge userId={review.user_id} email={review.profiles?.email} username={review.profiles?.username} size={14} className="mr-1" />
                               </span>
                               <KotobiBadge value={review.selected_badge} size={18} />
                               {review.profiles?.is_ai_bot && <AIBotBadge size="sm" className="mr-1 shrink-0" />}
